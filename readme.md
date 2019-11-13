@@ -32,9 +32,9 @@ If you have never installed a jsenv package, read [Installing a jsenv package](h
 This documentation is up-to-date with a specific version so prefer any of the following commands
 
 ```console
-npm install @jsenv/inspect@1.0.0
+npm install @jsenv/inspect@1.1.0
 ```
 
 ```console
-yarn add @jsenv/inspect@1.0.0
+yarn add @jsenv/inspect@1.1.0
 ```
