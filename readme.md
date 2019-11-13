@@ -17,7 +17,7 @@ Convert value into evaluable string.
 
 jsenv/jsenv-inspect github repository publishes `@jsenv/inspect` package on github and npm package registries.
 
-`@jsenv/inspect` ...
+`@jsenv/inspect` turns a JavaScript value into a string meant to be read by a human.
 
 ## Example
 

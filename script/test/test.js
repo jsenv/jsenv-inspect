@@ -1,7 +1,14 @@
 const { test } = require("@jsenv/testing")
-const { projectPath, testDescription } = require("../../jsenv.config.js")
+const { projectPath, generateTestDescription } = require("../../jsenv.config.js")
 
-test({
-  projectPath,
-  executeDescription: testDescription,
-})
+const run = async () => {
+  const { testDescription, stop } = await generateTestDescription()
+
+  await test({
+    projectPath,
+    executeDescription: testDescription,
+  })
+
+  stop()
+}
+run()

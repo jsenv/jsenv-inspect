@@ -12,14 +12,6 @@ const generateTestDescription = async () => {
   })
 
   const testDescription = {
-    "/test/boolean.test.js": {
-      browser: {
-        launch: launchChromiumTab,
-      },
-      node: {
-        launch: launchNode,
-      },
-    },
     "/test/**/*.test.js": {
       browser: {
         launch: launchChromiumTab,
