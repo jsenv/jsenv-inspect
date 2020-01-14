@@ -1,8 +1,7 @@
 {
 	"name": "@jsenv/inspect",
-	"type": "module",
+	"version": "1.2.0-alpha.0",
 	"description": "Convert a value into a readable string.",
-	"version": "1.2.0",
 	"license": "MIT",
 	"repository": {
 		"type": "git",
@@ -15,6 +14,8 @@
 	"engines": {
 		"node": ">=12.0.0"
 	},
+	"type": "module",
+	"exports": "./index.js",
 	"module": "index.js",
 	"browser": "dist/global/main.js",
 	"main": "dist/commonjs/main.js",
