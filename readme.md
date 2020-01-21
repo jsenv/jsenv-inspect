@@ -23,16 +23,8 @@ Live node example: https://jsenv.github.io/jsenv-inspect/#node-example
 
 # Installation
 
-If you have never installed a jsenv package, read [Installing a jsenv package](https://github.com/jsenv/jsenv-core/blob/master/docs/installing-jsenv-package.md#installing-a-jsenv-package) before going further.
-
-This documentation is up-to-date with a specific version so prefer any of the following commands
-
 ```console
-npm install @jsenv/inspect@1.2.0
-```
-
-```console
-yarn add @jsenv/inspect@1.2.0
+npm install @jsenv/inspect@1.2.2
 ```
 
 # Documentation

@@ -480,4 +480,4 @@ const inspect = (value, {
 };
 
 exports.inspect = inspect;
-//# sourceMappingURL=main.js.map
+//# sourceMappingURL=main.cjs.map
