@@ -24,7 +24,7 @@ Live node example: https://jsenv.github.io/jsenv-inspect/#node-example
 # Installation
 
 ```console
-npm install @jsenv/inspect@1.2.2
+npm install @jsenv/inspect@1.3.0
 ```
 
 # Documentation
