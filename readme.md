@@ -17,16 +17,44 @@ Convert a value into a readable string.
 
 `@jsenv/inspect` turns a JavaScript value into a string meant to be read by a human.
 
-Live browser example: https://jsenv.github.io/jsenv-inspect/#browser-example.
+```js
+import { inspect } from "../index.js"
 
-Live node example: https://jsenv.github.io/jsenv-inspect/#node-example
+console.log(
+  inspect({
+    boolean: true,
+    number: 10,
+    string: "hello world",
+  }),
+)
+```
+
+![terminal screenshot](./docs/terminal-screenshot.png)
+
+Inspect is alsmot equivalent to JSON.stringify
+
+```js
+const inspect = (value) => JSON.stringify(value, null, "  ")
+```
+
+The difference is that inspect handle values that JSON.stringify does not and focuses on readability.
+
+```js
+JSON.stringify(Infinity) // "null"
+JSON.stringify(-0) // "0"
+
+inspect(Infinity) // "Infinity"
+inspect(-0) // "-0"
+```
 
 # Installation
 
 ```console
-npm install @jsenv/inspect@1.3.0
+npm install @jsenv/inspect@1.3.1
 ```
 
 # Documentation
 
-TODO
+Live browser example: https://jsenv.github.io/jsenv-inspect/#browser-example.
+
+Live node example: https://jsenv.github.io/jsenv-inspect/#node-example

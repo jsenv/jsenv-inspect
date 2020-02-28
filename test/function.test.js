@@ -1,6 +1,8 @@
 import { assert } from "@jsenv/assert"
 import { inspect } from "../index.js"
 
+// const arrowFunctionSupported = (() => {}).prototype === null
+
 {
   const actual = inspect(function() {})
   const expected = `function () {/* hidden */}`
@@ -41,7 +43,8 @@ import { inspect } from "../index.js"
 
 {
   const nested = {
-    function() {},
+    // eslint-disable-next-line object-shorthand
+    function: function() {},
   }
   const actual = inspect(nested)
   const expected = `{
@@ -49,7 +52,3 @@ import { inspect } from "../index.js"
 }`
   assert({ actual, expected })
 }
-
-// if arrow function are supported (not transpiled)
-// if ((() => {}).prototype === null) {
-// }
