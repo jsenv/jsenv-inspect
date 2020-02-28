@@ -52,10 +52,7 @@ import { inspect } from "../index.js"
   const expected = `{
   'name': 'dam'
 }`
-  assert({
-    actual,
-    expected,
-  })
+  assert({ actual, expected })
 }
 
 {
@@ -66,10 +63,7 @@ import { inspect } from "../index.js"
     "bar": true
   })
 })`
-  assert({
-    actual,
-    expected,
-  })
+  assert({ actual, expected })
 }
 
 {
@@ -80,10 +74,7 @@ import { inspect } from "../index.js"
   "foo": true,
   "bar": false
 }`
-  assert({
-    actual,
-    expected,
-  })
+  assert({ actual, expected })
 }
 
 {
@@ -93,10 +84,7 @@ import { inspect } from "../index.js"
     }),
   )
   const expected = "{}"
-  assert({
-    actual,
-    expected,
-  })
+  assert({ actual, expected })
 }
 
 {
@@ -107,10 +95,7 @@ import { inspect } from "../index.js"
     "name": "dam"
   }
 }`
-  assert({
-    actual,
-    expected,
-  })
+  assert({ actual, expected })
 }
 
 {
@@ -123,10 +108,7 @@ import { inspect } from "../index.js"
   "foo": true,
   "self": Symbol.for('circular')
 }`
-  assert({
-    actual,
-    expected,
-  })
+  assert({ actual, expected })
 }
 
 {
@@ -145,10 +127,7 @@ import { inspect } from "../index.js"
     "parent": Symbol.for('circular')
   }
 }`
-  assert({
-    actual,
-    expected,
-  })
+  assert({ actual, expected })
 }
 
 {

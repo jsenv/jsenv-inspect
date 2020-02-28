@@ -31,10 +31,7 @@ ${"  "}
   const expected = `[
   Symbol()
 ]`
-  assert({
-    actual,
-    expected,
-  })
+  assert({ actual, expected })
 }
 
 {
@@ -71,8 +68,5 @@ ${"  "}
   0,
   Symbol.for('circular')
 ]`
-  assert({
-    actual,
-    expected,
-  })
+  assert({ actual, expected })
 }

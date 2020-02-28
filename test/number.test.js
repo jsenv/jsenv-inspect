@@ -29,38 +29,26 @@ import { inspect } from "../index.js"
   // eslint-disable-next-line no-new-wrappers
   const actual = inspect(new Number(0))
   const expected = "Number(0)"
-  assert({
-    actual,
-    expected,
-  })
+  assert({ actual, expected })
 }
 
 {
   // eslint-disable-next-line no-new-wrappers
   const actual = inspect(new Number(0), { parenthesis: true })
   const expected = "(Number(0))"
-  assert({
-    actual,
-    expected,
-  })
+  assert({ actual, expected })
 }
 
 {
   // eslint-disable-next-line no-new-wrappers
   const actual = inspect(new Number(0), { useNew: true })
   const expected = "new Number(0)"
-  assert({
-    actual,
-    expected,
-  })
+  assert({ actual, expected })
 }
 
 {
   // eslint-disable-next-line no-new-wrappers
   const actual = inspect(new Number(0), { parenthesis: true, useNew: true })
   const expected = "new (Number(0))"
-  assert({
-    actual,
-    expected,
-  })
+  assert({ actual, expected })
 }
