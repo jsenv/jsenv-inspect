@@ -27,7 +27,10 @@ const {
 } = Object.prototype;
 
 const valueToCompositeType = object => {
-  if (typeof object === "object" && Object.getPrototypeOf(object) === null) return "Object";
+  if (typeof object === "object" && Object.getPrototypeOf(object) === null) {
+    return "Object";
+  }
+
   const toStringResult = toString.call(object); // returns format is '[object ${tagName}]';
   // and we want ${tagName}
 
@@ -61,7 +64,13 @@ const inspectBoolean = value => value.toString();
 const inspectNull = () => "null";
 
 const inspectNumber = value => {
-  return Object.is(value, -0) ? "-0" : value.toString();
+  return isNegativeZero(value) ? "-0" : value.toString();
+}; // Use this and instead of Object.is(value, -0)
+// because in some corner cases firefox returns false
+// for Object.is(-0, -0)
+
+const isNegativeZero = value => {
+  return value === 0 && 1 / value === -Infinity;
 };
 
 // https://github.com/joliss/js-string-escape/blob/master/index.js
@@ -177,13 +186,18 @@ const symbolToDescription = "description" in Symbol.prototype ? symbol => symbol
 
 const inspectUndefined = () => "undefined";
 
+const inspectBigInt = value => {
+  return `${value}n`;
+};
+
 const primitiveMap = {
   boolean: inspectBoolean,
   null: inspectNull,
   number: inspectNumber,
   string: inspectString,
   symbol: inspectSymbol,
-  undefined: inspectUndefined
+  undefined: inspectUndefined,
+  bigint: inspectBigInt
 };
 
 const inspectConstructor = (value, {
@@ -258,6 +272,97 @@ const inspectArray = (value, {
   });
 };
 
+const inspectBigIntObject = (value, {
+  nestedInspect
+}) => {
+  const bigIntSource = nestedInspect(value.valueOf());
+  return `BigInt(${bigIntSource})`;
+};
+
+const inspectBooleanObject = (value, {
+  nestedInspect,
+  useNew,
+  parenthesis
+}) => {
+  const booleanSource = nestedInspect(value.valueOf());
+  return inspectConstructor(`Boolean(${booleanSource})`, {
+    useNew,
+    parenthesis
+  });
+};
+
+const inspectError = (error, {
+  nestedInspect,
+  useNew,
+  parenthesis
+}) => {
+  const messageSource = nestedInspect(error.message);
+  const errorSource = inspectConstructor(`${errorToConstructorName(error)}(${messageSource})`, {
+    useNew,
+    parenthesis
+  });
+  return errorSource;
+};
+
+const errorToConstructorName = ({
+  name
+}) => {
+  if (derivedErrorNameArray.includes(name)) {
+    return name;
+  }
+
+  return "Error";
+}; // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error#Error_types
+
+
+const derivedErrorNameArray = ["EvalError", "RangeError", "ReferenceError", "SyntaxError", "TypeError", "URIError"];
+
+const inspectDate = (value, {
+  nestedInspect,
+  useNew,
+  parenthesis
+}) => {
+  const dateSource = nestedInspect(value.valueOf());
+  return inspectConstructor(`Date(${dateSource})`, {
+    useNew,
+    parenthesis
+  });
+};
+
+const inspectFunction = (value, {
+  showFunctionBody,
+  parenthesis,
+  depth
+}) => {
+  let functionSource;
+
+  if (showFunctionBody) {
+    functionSource = value.toString();
+  } else {
+    const isArrowFunction = value.prototype === undefined;
+    const head = isArrowFunction ? "() =>" : `function ${depth === 0 ? value.name : ""}()`;
+    functionSource = `${head} {/* hidden */}`;
+  }
+
+  if (parenthesis) {
+    return `(${functionSource})`;
+  }
+
+  return functionSource;
+};
+
+const inspectNumberObject = (value, {
+  nestedInspect,
+  useNew,
+  parenthesis
+}) => {
+  const numberSource = nestedInspect(value.valueOf());
+  return inspectConstructor(`Number(${numberSource})`, {
+    useNew,
+    parenthesis
+  });
+};
+
 const inspectObject = (value, {
   nestedInspect,
   seen = [],
@@ -328,51 +433,7 @@ const inspectObject = (value, {
   });
 };
 
-const inspectFunction = (value, {
-  showFunctionBody,
-  parenthesis,
-  depth
-}) => {
-  let functionSource;
-
-  if (showFunctionBody) {
-    functionSource = value.toString();
-  } else {
-    const isArrowFunction = value.prototype === undefined;
-    const head = isArrowFunction ? "() =>" : `function ${depth === 0 ? value.name : ""}()`;
-    functionSource = `${head} {/* hidden */}`;
-  }
-
-  if (parenthesis) {
-    return `(${functionSource})`;
-  }
-
-  return functionSource;
-};
-
-const inspectDate = (value, {
-  nestedInspect,
-  useNew,
-  parenthesis
-}) => {
-  const dateSource = nestedInspect(value.valueOf());
-  return inspectConstructor(`Date(${dateSource})`, {
-    useNew,
-    parenthesis
-  });
-};
-
-const inspectNumberObject = (value, {
-  nestedInspect,
-  useNew,
-  parenthesis
-}) => {
-  const numberSource = nestedInspect(value.valueOf());
-  return inspectConstructor(`Number(${numberSource})`, {
-    useNew,
-    parenthesis
-  });
-};
+const inspectRegExp = value => value.toString();
 
 const inspectStringObject = (value, {
   nestedInspect,
@@ -386,48 +447,9 @@ const inspectStringObject = (value, {
   });
 };
 
-const inspectBooleanObject = (value, {
-  nestedInspect,
-  useNew,
-  parenthesis
-}) => {
-  const booleanSource = nestedInspect(value.valueOf());
-  return inspectConstructor(`Boolean(${booleanSource})`, {
-    useNew,
-    parenthesis
-  });
-};
-
-const inspectError = (error, {
-  nestedInspect,
-  useNew,
-  parenthesis
-}) => {
-  const messageSource = nestedInspect(error.message);
-  const errorSource = inspectConstructor(`${errorToConstructorName(error)}(${messageSource})`, {
-    useNew,
-    parenthesis
-  });
-  return errorSource;
-};
-
-const errorToConstructorName = ({
-  name
-}) => {
-  if (derivedErrorNameArray.includes(name)) {
-    return name;
-  }
-
-  return "Error";
-}; // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error#Error_types
-
-
-const derivedErrorNameArray = ["EvalError", "RangeError", "ReferenceError", "SyntaxError", "TypeError", "URIError"];
-
-const inspectRegExp = value => value.toString();
-
 const compositeMap = {
   Array: inspectArray,
+  BigInt: inspectBigIntObject,
   Boolean: inspectBooleanObject,
   Error: inspectError,
   Date: inspectDate,
@@ -460,8 +482,15 @@ const inspect = (value, {
         });
       }
     };
-    if (primitiveType) return primitiveMap[primitiveType](scopedValue, options);
-    if (compositeType in compositeMap) return compositeMap[compositeType](scopedValue, options);
+
+    if (primitiveType) {
+      return primitiveMap[primitiveType](scopedValue, options);
+    }
+
+    if (compositeType in compositeMap) {
+      return compositeMap[compositeType](scopedValue, options);
+    }
+
     return inspectConstructor(`${compositeType}(${inspectObject(scopedValue, options)})`, { ...options,
       parenthesis: false
     });
@@ -480,4 +509,5 @@ const inspect = (value, {
 };
 
 exports.inspect = inspect;
+
 //# sourceMappingURL=main.cjs.map

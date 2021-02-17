@@ -1,7 +1,7 @@
-var __jsenv_inspect__ = function (exports) {
+var __jsenv_inspect__ = (function (exports) {
   'use strict';
 
-  var defineProperty = function (obj, key, value) {
+  var defineProperty = (function (obj, key, value) {
     // Shortcircuit the slow defineProperty path when possible.
     // We are trying to avoid issues where setters defined on the
     // prototype cause side effects under the fast path of simple
@@ -19,23 +19,23 @@ var __jsenv_inspect__ = function (exports) {
     }
 
     return obj;
-  };
+  });
 
-  function _objectSpread(target) {
+  function _objectSpread (target) {
     for (var i = 1; i < arguments.length; i++) {
       // eslint-disable-next-line prefer-rest-params
       var source = arguments[i] === null ? {} : arguments[i];
 
       if (i % 2) {
         // eslint-disable-next-line no-loop-func
-        ownKeys(source, true).forEach(function (key) {
+        ownKeys(Object(source), true).forEach(function (key) {
           defineProperty(target, key, source[key]);
         });
       } else if (Object.getOwnPropertyDescriptors) {
         Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
       } else {
         // eslint-disable-next-line no-loop-func
-        ownKeys(source).forEach(function (key) {
+        ownKeys(Object(source)).forEach(function (key) {
           Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
         });
       }
@@ -45,7 +45,6 @@ var __jsenv_inspect__ = function (exports) {
   } // This function is different to "Reflect.ownKeys". The enumerableOnly
   // filters on symbol properties only. Returned string properties are always
   // enumerable. It is good to use in objectSpread.
-
 
   function ownKeys(object, enumerableOnly) {
     var keys = Object.keys(object);
@@ -92,11 +91,13 @@ var __jsenv_inspect__ = function (exports) {
       primitiveType: primitiveType
     };
   };
-
   var toString = Object.prototype.toString;
 
   var valueToCompositeType = function valueToCompositeType(object) {
-    if (_typeof(object) === "object" && Object.getPrototypeOf(object) === null) return "Object";
+    if (_typeof(object) === "object" && Object.getPrototypeOf(object) === null) {
+      return "Object";
+    }
+
     var toStringResult = toString.call(object); // returns format is '[object ${tagName}]';
     // and we want ${tagName}
 
@@ -134,11 +135,17 @@ var __jsenv_inspect__ = function (exports) {
   };
 
   var inspectNumber = function inspectNumber(value) {
-    return Object.is(value, -0) ? "-0" : value.toString();
-  }; // https://github.com/joliss/js-string-escape/blob/master/index.js
+    return isNegativeZero(value) ? "-0" : value.toString();
+  }; // Use this and instead of Object.is(value, -0)
+  // because in some corner cases firefox returns false
+  // for Object.is(-0, -0)
+
+  var isNegativeZero = function isNegativeZero(value) {
+    return value === 0 && 1 / value === -Infinity;
+  };
+
+  // https://github.com/joliss/js-string-escape/blob/master/index.js
   // http://javascript.crockford.com/remedial.html
-
-
   var quote = function quote(value) {
     var string = String(value);
     var i = 0;
@@ -169,7 +176,6 @@ var __jsenv_inspect__ = function (exports) {
 
     return escapedString;
   };
-
   var preNewLineAndIndentation = function preNewLineAndIndentation(value, _ref) {
     var depth = _ref.depth,
         indentUsingTab = _ref.indentUsingTab,
@@ -236,7 +242,6 @@ var __jsenv_inspect__ = function (exports) {
     if (parenthesis) return "".concat(symbolSource);
     return symbolSource;
   };
-
   var symbolToDescription = "description" in Symbol.prototype ? function (symbol) {
     return symbol.description;
   } : function (symbol) {
@@ -251,13 +256,18 @@ var __jsenv_inspect__ = function (exports) {
     return "undefined";
   };
 
+  var inspectBigInt = function inspectBigInt(value) {
+    return "".concat(value, "n");
+  };
+
   var primitiveMap = {
     boolean: inspectBoolean,
     null: inspectNull,
     number: inspectNumber,
     string: inspectString,
     symbol: inspectSymbol,
-    undefined: inspectUndefined
+    undefined: inspectUndefined,
+    bigint: inspectBigInt
   };
 
   var inspectConstructor = function inspectConstructor(value, _ref) {
@@ -332,6 +342,91 @@ var __jsenv_inspect__ = function (exports) {
     });
   };
 
+  var inspectBigIntObject = function inspectBigIntObject(value, _ref) {
+    var nestedInspect = _ref.nestedInspect;
+    var bigIntSource = nestedInspect(value.valueOf());
+    return "BigInt(".concat(bigIntSource, ")");
+  };
+
+  var inspectBooleanObject = function inspectBooleanObject(value, _ref) {
+    var nestedInspect = _ref.nestedInspect,
+        useNew = _ref.useNew,
+        parenthesis = _ref.parenthesis;
+    var booleanSource = nestedInspect(value.valueOf());
+    return inspectConstructor("Boolean(".concat(booleanSource, ")"), {
+      useNew: useNew,
+      parenthesis: parenthesis
+    });
+  };
+
+  var inspectError = function inspectError(error, _ref) {
+    var nestedInspect = _ref.nestedInspect,
+        useNew = _ref.useNew,
+        parenthesis = _ref.parenthesis;
+    var messageSource = nestedInspect(error.message);
+    var errorSource = inspectConstructor("".concat(errorToConstructorName(error), "(").concat(messageSource, ")"), {
+      useNew: useNew,
+      parenthesis: parenthesis
+    });
+    return errorSource;
+  };
+
+  var errorToConstructorName = function errorToConstructorName(_ref2) {
+    var name = _ref2.name;
+
+    if (derivedErrorNameArray.includes(name)) {
+      return name;
+    }
+
+    return "Error";
+  }; // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error#Error_types
+
+
+  var derivedErrorNameArray = ["EvalError", "RangeError", "ReferenceError", "SyntaxError", "TypeError", "URIError"];
+
+  var inspectDate = function inspectDate(value, _ref) {
+    var nestedInspect = _ref.nestedInspect,
+        useNew = _ref.useNew,
+        parenthesis = _ref.parenthesis;
+    var dateSource = nestedInspect(value.valueOf());
+    return inspectConstructor("Date(".concat(dateSource, ")"), {
+      useNew: useNew,
+      parenthesis: parenthesis
+    });
+  };
+
+  var inspectFunction = function inspectFunction(value, _ref) {
+    var showFunctionBody = _ref.showFunctionBody,
+        parenthesis = _ref.parenthesis,
+        depth = _ref.depth;
+    var functionSource;
+
+    if (showFunctionBody) {
+      functionSource = value.toString();
+    } else {
+      var isArrowFunction = value.prototype === undefined;
+      var head = isArrowFunction ? "() =>" : "function ".concat(depth === 0 ? value.name : "", "()");
+      functionSource = "".concat(head, " {/* hidden */}");
+    }
+
+    if (parenthesis) {
+      return "(".concat(functionSource, ")");
+    }
+
+    return functionSource;
+  };
+
+  var inspectNumberObject = function inspectNumberObject(value, _ref) {
+    var nestedInspect = _ref.nestedInspect,
+        useNew = _ref.useNew,
+        parenthesis = _ref.parenthesis;
+    var numberSource = nestedInspect(value.valueOf());
+    return inspectConstructor("Number(".concat(numberSource, ")"), {
+      useNew: useNew,
+      parenthesis: parenthesis
+    });
+  };
+
   var inspectObject = function inspectObject(value, _ref) {
     var nestedInspect = _ref.nestedInspect,
         _ref$seen = _ref.seen,
@@ -402,47 +497,8 @@ var __jsenv_inspect__ = function (exports) {
     });
   };
 
-  var inspectFunction = function inspectFunction(value, _ref) {
-    var showFunctionBody = _ref.showFunctionBody,
-        parenthesis = _ref.parenthesis,
-        depth = _ref.depth;
-    var functionSource;
-
-    if (showFunctionBody) {
-      functionSource = value.toString();
-    } else {
-      var isArrowFunction = value.prototype === undefined;
-      var head = isArrowFunction ? "() =>" : "function ".concat(depth === 0 ? value.name : "", "()");
-      functionSource = "".concat(head, " {/* hidden */}");
-    }
-
-    if (parenthesis) {
-      return "(".concat(functionSource, ")");
-    }
-
-    return functionSource;
-  };
-
-  var inspectDate = function inspectDate(value, _ref) {
-    var nestedInspect = _ref.nestedInspect,
-        useNew = _ref.useNew,
-        parenthesis = _ref.parenthesis;
-    var dateSource = nestedInspect(value.valueOf());
-    return inspectConstructor("Date(".concat(dateSource, ")"), {
-      useNew: useNew,
-      parenthesis: parenthesis
-    });
-  };
-
-  var inspectNumberObject = function inspectNumberObject(value, _ref) {
-    var nestedInspect = _ref.nestedInspect,
-        useNew = _ref.useNew,
-        parenthesis = _ref.parenthesis;
-    var numberSource = nestedInspect(value.valueOf());
-    return inspectConstructor("Number(".concat(numberSource, ")"), {
-      useNew: useNew,
-      parenthesis: parenthesis
-    });
+  var inspectRegExp = function inspectRegExp(value) {
+    return value.toString();
   };
 
   var inspectStringObject = function inspectStringObject(value, _ref) {
@@ -456,48 +512,9 @@ var __jsenv_inspect__ = function (exports) {
     });
   };
 
-  var inspectBooleanObject = function inspectBooleanObject(value, _ref) {
-    var nestedInspect = _ref.nestedInspect,
-        useNew = _ref.useNew,
-        parenthesis = _ref.parenthesis;
-    var booleanSource = nestedInspect(value.valueOf());
-    return inspectConstructor("Boolean(".concat(booleanSource, ")"), {
-      useNew: useNew,
-      parenthesis: parenthesis
-    });
-  };
-
-  var inspectError = function inspectError(error, _ref) {
-    var nestedInspect = _ref.nestedInspect,
-        useNew = _ref.useNew,
-        parenthesis = _ref.parenthesis;
-    var messageSource = nestedInspect(error.message);
-    var errorSource = inspectConstructor("".concat(errorToConstructorName(error), "(").concat(messageSource, ")"), {
-      useNew: useNew,
-      parenthesis: parenthesis
-    });
-    return errorSource;
-  };
-
-  var errorToConstructorName = function errorToConstructorName(_ref2) {
-    var name = _ref2.name;
-
-    if (derivedErrorNameArray.includes(name)) {
-      return name;
-    }
-
-    return "Error";
-  }; // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error#Error_types
-
-
-  var derivedErrorNameArray = ["EvalError", "RangeError", "ReferenceError", "SyntaxError", "TypeError", "URIError"];
-
-  var inspectRegExp = function inspectRegExp(value) {
-    return value.toString();
-  };
-
   var compositeMap = {
     Array: inspectArray,
+    BigInt: inspectBigIntObject,
     Boolean: inspectBooleanObject,
     Error: inspectError,
     Date: inspectDate,
@@ -530,18 +547,24 @@ var __jsenv_inspect__ = function (exports) {
           primitiveType = _valueToType.primitiveType,
           compositeType = _valueToType.compositeType;
 
-      var options = _objectSpread({}, scopedOptions, {
+      var options = _objectSpread(_objectSpread({}, scopedOptions), {}, {
         nestedInspect: function nestedInspect(nestedValue) {
           var nestedOptions = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
-          return scopedInspect(nestedValue, _objectSpread({}, scopedOptions, {
+          return scopedInspect(nestedValue, _objectSpread(_objectSpread({}, scopedOptions), {}, {
             depth: scopedOptions.depth + 1
           }, nestedOptions));
         }
       });
 
-      if (primitiveType) return primitiveMap[primitiveType](scopedValue, options);
-      if (compositeType in compositeMap) return compositeMap[compositeType](scopedValue, options);
-      return inspectConstructor("".concat(compositeType, "(").concat(inspectObject(scopedValue, options), ")"), _objectSpread({}, options, {
+      if (primitiveType) {
+        return primitiveMap[primitiveType](scopedValue, options);
+      }
+
+      if (compositeType in compositeMap) {
+        return compositeMap[compositeType](scopedValue, options);
+      }
+
+      return inspectConstructor("".concat(compositeType, "(").concat(inspectObject(scopedValue, options), ")"), _objectSpread(_objectSpread({}, options), {}, {
         parenthesis: false
       }));
     };
@@ -559,6 +582,11 @@ var __jsenv_inspect__ = function (exports) {
   };
 
   exports.inspect = inspect;
+
+  Object.defineProperty(exports, '__esModule', { value: true });
+
   return exports;
-}({});
-//# sourceMappingURL=./main.js.map
+
+}({}));
+
+//# sourceMappingURL=main.js.map
