@@ -4,6 +4,7 @@ import { inspectNumber } from "./number.js"
 import { inspectString } from "./string.js"
 import { inspectSymbol } from "./symbol.js"
 import { inspectUndefined } from "./undefined.js"
+import { inspectBigInt } from "./bigint.js"
 
 export const primitiveMap = {
   boolean: inspectBoolean,
@@ -12,4 +13,5 @@ export const primitiveMap = {
   string: inspectString,
   symbol: inspectSymbol,
   undefined: inspectUndefined,
+  bigint: inspectBigInt,
 }
