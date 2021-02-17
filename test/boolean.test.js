@@ -1,5 +1,5 @@
 import { assert } from "@jsenv/assert"
-import { inspect } from "../index.js"
+import { inspect } from "@jsenv/inspect"
 
 {
   const actual = inspect(true)

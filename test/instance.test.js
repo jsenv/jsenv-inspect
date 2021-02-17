@@ -1,7 +1,7 @@
 import { assert } from "@jsenv/assert"
-import { inspect } from "../index.js"
+import { inspect } from "@jsenv/inspect"
 
-const CustomConstructor = function() {
+const CustomConstructor = function () {
   this.foo = true
 }
 const customInstance = new CustomConstructor()

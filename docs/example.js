@@ -1,4 +1,4 @@
-import { inspect } from "../index.js"
+import { inspect } from "@jsenv/inspect"
 
 console.log(
   inspect({
