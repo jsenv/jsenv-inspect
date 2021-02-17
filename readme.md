@@ -50,7 +50,7 @@ inspect(-0) // "-0"
 # Installation
 
 ```console
-npm install @jsenv/inspect@1.3.1
+npm install @jsenv/inspect
 ```
 
 # Documentation

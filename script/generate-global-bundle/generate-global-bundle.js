@@ -1,8 +1,12 @@
-const { generateGlobalBundle } = require("@jsenv/core")
-const jsenvConfig = require("../../jsenv.config.js")
+import { buildProject } from "@jsenv/core"
+import * as jsenvConfig from "../../jsenv.config.js"
 
-generateGlobalBundle({
+buildProject({
   ...jsenvConfig,
+  format: "global",
+  entryPointMap: {
+    "./index.js": "./main.js",
+  },
   globalName: "__jsenv_inspect__",
   bundleDirectoryClean: true,
 })
