@@ -18,7 +18,7 @@ Convert a value into a readable string.
 `@jsenv/inspect` turns a JavaScript value into a string meant to be read by a human.
 
 ```js
-import { inspect } from "../index.js"
+import { inspect } from "@jsenv/inspect"
 
 console.log(
   inspect({
@@ -37,11 +37,15 @@ Inspect is alsmot equivalent to JSON.stringify
 const inspect = (value) => JSON.stringify(value, null, "  ")
 ```
 
-The difference is that inspect handle values that JSON.stringify does not and focuses on readability.
+`@jsenv/inspect` focuses on accuracy and readability unlike `JSON.stringify`. As illustrated by js code below.
 
 ```js
 JSON.stringify(Infinity) // "null"
 JSON.stringify(-0) // "0"
+```
+
+```js
+import { inspect } from "@jsenv/inspect"
 
 inspect(Infinity) // "Infinity"
 inspect(-0) // "-0"
