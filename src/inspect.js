@@ -28,8 +28,14 @@ export const inspect = (
         })
       },
     }
-    if (primitiveType) return primitiveMap[primitiveType](scopedValue, options)
-    if (compositeType in compositeMap) return compositeMap[compositeType](scopedValue, options)
+
+    if (primitiveType) {
+      return primitiveMap[primitiveType](scopedValue, options)
+    }
+
+    if (compositeType in compositeMap) {
+      return compositeMap[compositeType](scopedValue, options)
+    }
 
     return inspectConstructor(`${compositeType}(${inspectObject(scopedValue, options)})`, {
       ...options,

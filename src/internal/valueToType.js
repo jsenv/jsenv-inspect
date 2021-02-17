@@ -3,17 +3,21 @@ export const valueToType = (value) => {
   if (primitiveType === "function") {
     return { compositeType: "Function" }
   }
+
   if (primitiveType === "object") {
     const compositeType = valueToCompositeType(value)
     return { compositeType }
   }
+
   return { primitiveType }
 }
 
 const { toString } = Object.prototype
 
 const valueToCompositeType = (object) => {
-  if (typeof object === "object" && Object.getPrototypeOf(object) === null) return "Object"
+  if (typeof object === "object" && Object.getPrototypeOf(object) === null) {
+    return "Object"
+  }
 
   const toStringResult = toString.call(object)
   // returns format is '[object ${tagName}]';
@@ -25,6 +29,7 @@ const valueToCompositeType = (object) => {
       return objectConstructorName
     }
   }
+
   return tagName
 }
 
