@@ -23,3 +23,15 @@ import { inspect } from "@jsenv/inspect"
   const expected = "BigInt(1n)"
   assert({ actual, expected })
 }
+
+{
+  const actual = inspect(1234567n)
+  const expected = "1234567n"
+  assert({ actual, expected })
+}
+
+{
+  const actual = inspect(19223n)
+  const expected = "19223n"
+  assert({ actual, expected })
+}
