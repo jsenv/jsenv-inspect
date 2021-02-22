@@ -14,6 +14,7 @@ export const inspect = (
     showFunctionBody = false,
     indentUsingTab = false,
     indentSize = 2,
+    numericSeparator = true,
   } = {},
 ) => {
   const scopedInspect = (scopedValue, scopedOptions) => {
@@ -51,6 +52,7 @@ export const inspect = (
     showFunctionBody,
     indentUsingTab,
     indentSize,
+    numericSeparator,
     depth: 0,
   })
 }

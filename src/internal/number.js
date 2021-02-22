@@ -1,6 +1,6 @@
 // https://github.com/sindresorhus/eslint-plugin-unicorn/blob/main/rules/numeric-separators-style.js
 
-export const inspectNumber = (value) => {
+export const inspectNumber = (value, { numericSeparator }) => {
   if (isNegativeZero(value)) {
     return "-0"
   }
@@ -20,6 +20,11 @@ export const inspectNumber = (value) => {
   }
 
   const numberString = String(value)
+
+  if (!numericSeparator) {
+    return numberString
+  }
+
   const { number, mark = "", sign = "", power = "" } = numberString.match(
     /^(?<number>.*?)(?:(?<mark>e)(?<sign>[+-])?(?<power>\d+))?$/i,
   ).groups
