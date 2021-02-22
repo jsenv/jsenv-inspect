@@ -15,7 +15,7 @@ Convert a value into a readable string.
 
 # Presentation
 
-`@jsenv/inspect` turns a JavaScript value into a string meant to be read by a human.
+`@jsenv/inspect` turns a JavaScript value into a string meant to be read by a human. It is written in ES6 and compatible with browsers and Node.js.
 
 ```js
 import { inspect } from "@jsenv/inspect"
@@ -31,13 +31,7 @@ console.log(
 
 ![terminal screenshot](./docs/terminal-screenshot.png)
 
-Inspect is alsmot equivalent to JSON.stringify
-
-```js
-const inspect = (value) => JSON.stringify(value, null, "  ")
-```
-
-`@jsenv/inspect` focuses on readability and accuracy unlike `JSON.stringify`. As illustrated by js code below.
+`inspect` is almost equivalent to `JSON.stringify` but it focuses on readability and accuracy. This is illustrated in the code below.
 
 ```js
 JSON.stringify(123456789) // "123456789"
