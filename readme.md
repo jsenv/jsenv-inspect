@@ -37,9 +37,10 @@ Inspect is alsmot equivalent to JSON.stringify
 const inspect = (value) => JSON.stringify(value, null, "  ")
 ```
 
-`@jsenv/inspect` focuses on accuracy and readability unlike `JSON.stringify`. As illustrated by js code below.
+`@jsenv/inspect` focuses on readability and accuracy unlike `JSON.stringify`. As illustrated by js code below.
 
 ```js
+JSON.stringify(123456789) // "123456789"
 JSON.stringify(Infinity) // "null"
 JSON.stringify(-0) // "0"
 ```
@@ -47,6 +48,7 @@ JSON.stringify(-0) // "0"
 ```js
 import { inspect } from "@jsenv/inspect"
 
+inspect(123456789) // "123_456_789"
 inspect(Infinity) // "Infinity"
 inspect(-0) // "-0"
 ```
